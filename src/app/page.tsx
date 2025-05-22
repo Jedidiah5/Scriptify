@@ -40,9 +40,11 @@ export default function HomePage() {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const { toast } = useToast();
   const [isMounted, setIsMounted] = useState(false);
+  const [currentYear, setCurrentYear] = useState<number | null>(null);
 
   useEffect(() => {
     setIsMounted(true);
+    setCurrentYear(new Date().getFullYear());
   }, []);
 
 
@@ -174,7 +176,7 @@ export default function HomePage() {
       </main>
 
       <footer className="py-6 text-center text-sm text-muted-foreground border-t border-border/50 bg-card/50 backdrop-blur-sm">
-        <p>&copy; {new Date().getFullYear()} Scriptify. Unleash your creativity!</p>
+        <p>&copy; {currentYear !== null ? currentYear : '2024'} Scriptify. Unleash your creativity!</p>
         <p className="text-xs">Powered by AI & Next.js</p>
       </footer>
     </div>
