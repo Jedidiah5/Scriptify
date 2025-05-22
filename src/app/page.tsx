@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState, useEffect } from 'react';
@@ -7,7 +8,8 @@ import { generateScript, type GenerateScriptInput, type GenerateScriptOutput } f
 import { adjustScript, type AdjustScriptInput } from '@/ai/flows/adjust-script-flow';
 import { DEFAULT_FORMAT, DEFAULT_STYLE, type VideoFormat, type VideoStyle } from '@/lib/constants';
 import { useToast } from "@/hooks/use-toast";
-import { Github, LayoutGrid } from 'lucide-react';
+import { LayoutGrid, LogIn } from 'lucide-react';
+import { Button } from "@/components/ui/button";
 
 // const initialScriptForDev: GenerateScriptOutput = {
 //   hook: "Ever wondered how to make viral cat videos? 🙀",
@@ -140,15 +142,10 @@ export default function HomePage() {
               Scriptify
             </h1>
           </div>
-          <a
-            href="https://github.com/firebase/studio-examples/tree/main/scriptify-ai-video-scripts"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-muted-foreground hover:text-primary transition-colors"
-            title="View on GitHub"
-          >
-            <Github className="h-6 w-6" />
-          </a>
+          <Button variant="outline" onClick={() => { /* TODO: Implement Sign In */ toast({ title: "Sign In Clicked!", description: "Sign in functionality coming soon."}) }}>
+            <LogIn className="mr-2 h-4 w-4" />
+            Sign In
+          </Button>
         </div>
       </header>
 
@@ -202,3 +199,4 @@ function Loader2({ className }: { className?: string }) {
     </svg>
   );
 }
+
