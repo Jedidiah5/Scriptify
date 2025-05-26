@@ -1,3 +1,4 @@
+
 'use server';
 
 /**
@@ -76,17 +77,37 @@ const generateScriptFlow = ai.defineFlow(
     outputSchema: GenerateScriptOutputSchema,
   },
   async (input) => {
+    const flowName = 'generateScriptFlow';
     try {
       const {output} = await generateScriptPrompt(input);
       if (!output) {
-        console.error('AI prompt returned no output for generateScriptFlow. Input:', JSON.stringify(input));
-        throw new Error('The AI failed to generate a script because the prompt returned no output.');
+        console.error(`AI prompt returned no output for ${flowName}. Input:`, JSON.stringify(input));
+        throw new Error(`The AI failed to generate a script because the prompt returned no output for ${flowName}.`);
       }
       return output;
     } catch (error) {
-      console.error('Error in generateScriptFlow:', error, 'Input:', JSON.stringify(input));
-      const errorMessage = error instanceof Error ? error.message : String(error);
-      throw new Error(`Failed to process script generation: ${errorMessage}`);
+      console.error(`Detailed error in ${flowName}:`, error); 
+      console.error(`Input to ${flowName}:`, JSON.stringify(input));
+
+      let errorMessage = 'An unexpected error occurred during script processing.';
+      if (error instanceof Error) {
+        errorMessage = error.message;
+      } else if (typeof error === 'string') {
+        errorMessage = error;
+      } else {
+        try {
+          errorMessage = JSON.stringify(error);
+        } catch (e) {
+          // If stringify fails, stick to the generic message
+        }
+      }
+
+      if (errorMessage.toLowerCase().includes('api key') || errorMessage.toLowerCase().includes('permission denied') || errorMessage.toLowerCase().includes('authentication')) {
+        errorMessage = `Potential API Key or permission issue: ${errorMessage}. Please ensure your GOOGLE_API_KEY (or similar, e.g., GOOGLE_GENERATIVE_LANGUAGE_API_KEY) is correctly set in your Vercel project's environment variables.`;
+      }
+      
+      throw new Error(`Error in ${flowName}: ${errorMessage}`);
     }
   }
 );
+
