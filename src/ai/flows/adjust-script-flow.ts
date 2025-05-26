@@ -51,10 +51,17 @@ const adjustScriptFlow = ai.defineFlow(
     outputSchema: GenerateScriptOutputSchema,
   },
   async (input) => {
-    const {output} = await adjustScriptPrompt(input);
-    if (!output) {
-      throw new Error("The AI failed to return an adjusted script.");
+    try {
+      const {output} = await adjustScriptPrompt(input);
+      if (!output) {
+        console.error('AI prompt returned no output for adjustScriptFlow. Input:', JSON.stringify(input));
+        throw new Error('The AI failed to return an adjusted script because the prompt returned no output.');
+      }
+      return output;
+    } catch (error) {
+      console.error('Error in adjustScriptFlow:', error, 'Input:', JSON.stringify(input));
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      throw new Error(`Failed to process script adjustment: ${errorMessage}`);
     }
-    return output;
   }
 );

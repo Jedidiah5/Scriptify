@@ -75,8 +75,18 @@ const generateScriptFlow = ai.defineFlow(
     inputSchema: GenerateScriptInputSchema,
     outputSchema: GenerateScriptOutputSchema,
   },
-  async input => {
-    const {output} = await generateScriptPrompt(input);
-    return output!;
+  async (input) => {
+    try {
+      const {output} = await generateScriptPrompt(input);
+      if (!output) {
+        console.error('AI prompt returned no output for generateScriptFlow. Input:', JSON.stringify(input));
+        throw new Error('The AI failed to generate a script because the prompt returned no output.');
+      }
+      return output;
+    } catch (error) {
+      console.error('Error in generateScriptFlow:', error, 'Input:', JSON.stringify(input));
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      throw new Error(`Failed to process script generation: ${errorMessage}`);
+    }
   }
 );
